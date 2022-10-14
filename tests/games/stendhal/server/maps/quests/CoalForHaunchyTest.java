@@ -63,7 +63,7 @@ public class CoalForHaunchyTest extends ZonePlayerAndNPCTestImpl {
 	}
 
 	@Test
-	public void testCoalQuestion() {
+	public void haunchyAcceptsCoal() {
 		SpeakerNPC haunchy = SingletonRepository.getNPCList().get("Haunchy Meatoch");
 		Engine haunchyEng = haunchy.getEngine();
 
@@ -160,7 +160,7 @@ public class CoalForHaunchyTest extends ZonePlayerAndNPCTestImpl {
 	}
 	
 	@Test
-	public void testCharcoalQuest() {
+	public void haunchyAcceptsCharcoal() {
 		SpeakerNPC haunchy = SingletonRepository.getNPCList().get("Haunchy Meatoch");
 		Engine haunchyEng = haunchy.getEngine();
 
