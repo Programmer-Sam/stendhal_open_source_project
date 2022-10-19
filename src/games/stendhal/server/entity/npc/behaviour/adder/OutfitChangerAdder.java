@@ -113,7 +113,21 @@ public class OutfitChangerAdder {
 						raiser.setCurrentState(ConversationStates.BUY_PRICE_OFFERED); // success
 					}
 				});
-
+		for (int i = 0; i<ConversationPhrases.MASK_SELECTOR.size(); i++) {
+			final int index = i;
+		engine.add(ConversationStates.PICK_OUTFIT, 
+				ConversationPhrases.MASK_SELECTOR.get(index),
+				null, false , ConversationStates.ATTENDING,
+				null, new ChatAction() {
+					@Override
+					public void fire(final Player player, final Sentence sentence,
+							final EventRaiser npc) {
+						outfitBehaviour.chooseOutfit(player, "mask", index);
+						npc.say(getReturnPhrase());
+						currentBehavRes = null;
+					}
+		});}
+		
 		engine.add(ConversationStates.BUY_PRICE_OFFERED,
 				ConversationPhrases.YES_MESSAGES, null,
 				false, ConversationStates.ATTENDING,
@@ -135,7 +149,7 @@ public class OutfitChangerAdder {
 							} else {
 								npc.say("Thanks!");
 							}
-						}
+						}else {npc.setCurrentState(ConversationStates.PICK_OUTFIT);}
 
 						currentBehavRes = null;
 					}

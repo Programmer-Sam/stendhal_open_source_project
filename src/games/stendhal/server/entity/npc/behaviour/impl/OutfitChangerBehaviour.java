@@ -171,6 +171,13 @@ public class OutfitChangerBehaviour extends MerchantBehaviour {
 
 		if (player.isEquipped("money", charge)) {
 			player.drop("money", charge);
+			
+			if (res.getChosenItemName() == "mask") {
+				String maskList = "Bear, Dog, Frog, Monkey, Penguin, Teddy";
+				seller.say("Which " + res.getChosenItemName() + " would you like: " + maskList);
+				return false;
+			}
+			
 			putOnOutfit(player, outfitType);
 			return true;
 		} else {
@@ -238,6 +245,18 @@ public class OutfitChangerBehaviour extends MerchantBehaviour {
 
 		final List<Outfit> possibleNewOutfits = outfitTypes.get(outfitType);
 		final Outfit newOutfit = Rand.rand(possibleNewOutfits);
+		player.setOutfit(newOutfit.putOver(player.getOutfit()), true);
+		player.registerOutfitExpireTime(endurance);
+	}
+	
+	public void chooseOutfit(final Player player, final String outfitType, int outfitIndex) {
+		if (resetBeforeChange) {
+			// cannot use OutfitChangerBehaviour.returnToOriginalOutfit(player) as it checks if the outfit was rented from here
+			player.returnToOriginalOutfit();
+		}
+
+		final List<Outfit> possibleNewOutfits = outfitTypes.get(outfitType);
+		final Outfit newOutfit = possibleNewOutfits.get(outfitIndex);
 		player.setOutfit(newOutfit.putOver(player.getOutfit()), true);
 		player.registerOutfitExpireTime(endurance);
 	}

@@ -61,6 +61,9 @@ public class ConversationPhrases {
 			"farewell", "cya", "adios");
 
 	public static final List<String> PURCHASE_MESSAGES = Arrays.asList("buy", "purchase");
+	
+	public static final List<String> MASK_SELECTOR = Arrays.asList("bear", "frog", "penguin",
+			"monkey", "dog", "teddy");
 
 	/**
 	 * Combine a string collection (list) with additional strings.
