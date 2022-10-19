@@ -451,13 +451,13 @@ public class FruitsForCoraliaTest extends ZonePlayerAndNPCTestImpl {
 		assertEquals("I'd still like 4 #apples, 5 #bananas, 9 #cherries, 2 #'bunches of grapes', 4 #pears, 2 #pomegranates, and a #watermelon. Have you brought any?", getReply(npc));
 
 		// -----------------------------------------------
-
-		en.step(player, "everything");
+		
+		final int xp = player.getXP();
+		final double karma = player.getKarma();
 
 		// -----------------------------------------------
 
-		final int xp = player.getXP();
-		final double karma = player.getKarma();
+		en.step(player, "everything");
 
 		// -----------------------------------------------
 
