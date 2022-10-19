@@ -343,9 +343,7 @@ public class FruitsForCoralia extends AbstractQuest {
 			    @Override
 				public void fire(final Player player, final Sentence sentence,
 					   final EventRaiser npc) {
-			    	everythingForCoralia(player, npc);
-			    	completeAction.fire(player, sentence, npc);
-			    	npc.setCurrentState(ConversationStates.ATTENDING);
+			    	everythingForCoralia(player, sentence, npc);
 			}
 		});
     	
@@ -362,10 +360,11 @@ public class FruitsForCoralia extends AbstractQuest {
     				completeAction,
     				ConversationStates.ATTENDING));
     	}
+    	
     }
     
     private static final List<String> NEEDED_FRUIT = Arrays.asList(
-    		"apple", "cherry", "banana", "grapes", "pear", "pomegranate");
+    		"apple", "cherry", "banana", "grapes", "pear", "pomegranate", "watermelon");
     
     private List<String> missingFruit(final Player player, final boolean hash) {
 		final List<String> result = new LinkedList<String>();
@@ -386,7 +385,7 @@ public class FruitsForCoralia extends AbstractQuest {
 		return result;
 	}
     
-    public void everythingForCoralia(final Player player, final EventRaiser npc) {
+    public void everythingForCoralia(final Player player, final Sentence sentence, final EventRaiser npc) {
     	List<String> missing = missingFruit(player, false);
 		for (final String fruit : missing) {
 		if (player.drop(fruit)) {
@@ -394,6 +393,23 @@ public class FruitsForCoralia extends AbstractQuest {
 			player.setQuest(QUEST_SLOT, doneText + ";"
 			+ fruit);
 			}
+		}
+		missing = missingFruit(player, true);
+		if (missing.size() > 0) {
+			npc.say("Wonderful! Did you bring anything else with you?");
+			return;
+		} else {
+			ChatAction completeAction = new  MultipleActions(
+					new SetQuestAction(QUEST_SLOT, "done"),
+					new SayTextAction("My hat has never looked so delightful! Thank you ever so much! Here, take this as a reward."),
+					new IncreaseXPAction(300),
+					new IncreaseKarmaAction(5),
+					new EquipRandomAmountOfItemAction("crepes suzette", 1, 5),
+					new EquipRandomAmountOfItemAction("minor potion", 2, 8),
+					new SetQuestToTimeStampAction(QUEST_SLOT, 1)
+				);
+			completeAction.fire(player, sentence, npc);
+			npc.setCurrentState(ConversationStates.ATTENDING);
 		}
     }
 
