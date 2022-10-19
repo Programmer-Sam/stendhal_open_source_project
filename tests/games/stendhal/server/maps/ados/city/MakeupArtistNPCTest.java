@@ -42,6 +42,7 @@ public class MakeupArtistNPCTest extends ZonePlayerAndNPCTestImpl{
 		assertTrue(fidoreaNpc.isTalking());
 		assertEquals("To buy a mask will cost 20. Do you want to buy it?", getReply(fidoreaNpc));
 		fidoreaEngine.step(player, "yes");
+		assertEquals("Which mask would you like: Bear, Dog, Frog, Monkey, Penguin, Teddy", getReply(fidoreaNpc));
 	}
 	
 	@BeforeClass
