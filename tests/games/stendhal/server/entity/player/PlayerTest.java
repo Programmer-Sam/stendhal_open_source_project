@@ -31,16 +31,20 @@ import org.junit.Test;
 
 import games.stendhal.common.KeyedSlotUtil;
 import games.stendhal.common.constants.Nature;
+
 import games.stendhal.server.core.engine.StendhalRPZone;
 import games.stendhal.server.entity.Entity;
 import games.stendhal.server.entity.Outfit;
+import games.stendhal.server.entity.creature.Sheep;
 import games.stendhal.server.entity.item.Item;
 import games.stendhal.server.entity.status.StatusType;
 import games.stendhal.server.maps.MockStendhalRPRuleProcessor;
 import games.stendhal.server.maps.MockStendlRPWorld;
+
 import marauroa.common.game.RPObject;
 import marauroa.server.game.db.DatabaseFactory;
 import utilities.PlayerTestHelper;
+import utilities.RPClass.SheepTestHelper;
 
 public class PlayerTest {
 	private String playername = "player";
@@ -84,7 +88,26 @@ public class PlayerTest {
 		assertThat(player, equalTo(PlayerTestHelper.createPlayer(playername)));
 		assertThat(player, not(equalTo(PlayerTestHelper.createPlayer(playername + 's'))));
 	}
+	
+	/**
+	 * Tests for equalsObject.
+	 */
+	public void testIsMessageVisible() {
+		final StendhalRPZone zone = new StendhalRPZone("zone");
+		MockStendlRPWorld.get().addRPZone(zone);
 
+		SheepTestHelper.generateRPClasses();
+		
+		final Sheep pet = new Sheep();
+
+		zone.add(pet);
+		final Player bob = PlayerTestHelper.createPlayer("bob");
+		zone.add(bob);
+
+		bob.setSheep(pet);
+		assertThat(bob.events().get(0).get("text"), is("Your pet is too far from you!"));
+	}
+	
 	/**
 	 * Tests for toString.
 	 */
