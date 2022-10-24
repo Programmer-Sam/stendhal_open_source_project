@@ -388,7 +388,17 @@ public class FruitsForCoralia extends AbstractQuest {
     public void everythingForCoralia(final Player player, final Sentence sentence, final EventRaiser npc) {
     	List<String> missing = missingFruit(player, false);
 		for (final String fruit : missing) {
-		if (player.drop(fruit)) {
+			int amount = 0;
+			switch(fruit) {
+				case("#apple"): amount = 4; break;
+				case("#cherry"): amount = 9; break;
+				case("#banana"): amount = 5; break;
+				case("#grapes"): amount = 2; break;
+				case("#pear"): amount = 4; break;
+				case("#pomegranate"): amount = 2; break;
+				case("#watermelon"): amount = 1; break;
+			}
+		if (player.drop(fruit, amount)) {
 			final String doneText = player.getQuest(QUEST_SLOT);
 			player.setQuest(QUEST_SLOT, doneText + ";"
 			+ fruit);
@@ -396,7 +406,8 @@ public class FruitsForCoralia extends AbstractQuest {
 		}
 		missing = missingFruit(player, true);
 		if (missing.size() > 0) {
-			npc.say("Wonderful! Did you bring anything else with you?");
+			npc.say("I still need more fruit.");
+			npc.setCurrentState(ConversationStates.ATTENDING);
 			return;
 		} else {
 			ChatAction completeAction = new  MultipleActions(
