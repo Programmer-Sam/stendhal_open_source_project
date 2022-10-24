@@ -1685,7 +1685,7 @@ public class Player extends DressedEntity implements UseListener {
 			if (squaredDistance(sheep) > 7 * 7) {
 				RPAction warning = new RPAction();
 				warning.put("target", getName());
-				warning.put("text", "Your pet is too far from you!");
+				warning.put("text", "Your pet is too far from you! Please wait for your pet to travel.");
 				TellAction warning1 = new TellAction();
 			    warning1.onAction(this, warning);
 				return false;

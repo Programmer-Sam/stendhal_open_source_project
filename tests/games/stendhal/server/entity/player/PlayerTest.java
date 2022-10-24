@@ -105,7 +105,7 @@ public class PlayerTest {
 		zone.add(bob);
 
 		bob.setSheep(pet);
-		assertThat(bob.events().get(0).get("text"), is("Your pet is too far from you!"));
+		assertThat(bob.events().get(0).get("text"), is("Your pet is too far from you! Please wait for your pet to travel."));
 	}
 	
 	/**
