@@ -63,7 +63,7 @@ public class CoalForHaunchyTest extends ZonePlayerAndNPCTestImpl {
 	}
 
 	@Test
-	public void haunchyAcceptsCoal() {
+	public void testQuest() {
 		SpeakerNPC haunchy = SingletonRepository.getNPCList().get("Haunchy Meatoch");
 		Engine haunchyEng = haunchy.getEngine();
 
