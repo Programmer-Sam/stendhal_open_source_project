@@ -158,4 +158,74 @@ public class CoalForHaunchyTest extends ZonePlayerAndNPCTestImpl {
 		haunchyEng.step(player, "bye");
 		assertEquals("A nice day to you! Always keep your fire burning!", getReply(haunchy));
 	}
+	
+	@Test
+	public void haunchyAcceptsCharcoal() {
+		SpeakerNPC haunchy = SingletonRepository.getNPCList().get("Haunchy Meatoch");
+		Engine haunchyEng = haunchy.getEngine();
+
+		// -----------------------------------------------
+		// start with Haunchy
+
+		haunchyEng.step(player, "hi");
+		assertEquals("Hey! Nice day for a BBQ!", getReply(haunchy));
+		haunchyEng.step(player, "task");
+		assertEquals("I cannot use wood for this huge BBQ. To keep the heat I need some really old stone coal but there isn't much left. The problem is, that I can't fetch it myself because my steaks would burn then so I have to stay here. Can you bring me 25 pieces of #coal for my BBQ please?", getReply(haunchy));
+		haunchyEng.step(player, "coal");
+		assertEquals("Coal isn't easy to find. You normally can find it somewhere in the ground but perhaps you are lucky and find some in the old Semos Mine tunnels...", getReply(haunchy));
+		haunchyEng.step(player, "yes");
+		assertEquals("Thank you! If you have found 25 pieces, say #coal to me so I know you have it. I'll be sure to give you a nice and tasty reward.", getReply(haunchy));
+		haunchyEng.step(player, "coal");
+		assertEquals("You don't have the coal amount which I need yet. Go and pick some more pieces up, please.", getReply(haunchy));
+		haunchyEng.step(player, "bye");
+		assertEquals("A nice day to you! Always keep your fire burning!", getReply(haunchy));
+
+		// get 10 coals
+		PlayerTestHelper.equipWithStackableItem(player, "charcoal", 10);
+		haunchyEng.step(player, "hi");
+		assertEquals("Hey! Nice day for a BBQ!", getReply(haunchy));
+		haunchyEng.step(player, "task");
+		assertEquals("You don't have the coal amount which I need yet. Go and pick some more pieces up, please.", getReply(haunchy));
+		haunchyEng.step(player, "bye");
+		assertEquals("A nice day to you! Always keep your fire burning!", getReply(haunchy));
+
+		// get another 15 coals
+		PlayerTestHelper.equipWithStackableItem(player, "charcoal", 25);
+		haunchyEng.step(player, "hi");
+		assertEquals("Hey! Nice day for a BBQ!", getReply(haunchy));
+		haunchyEng.step(player, "task");
+		// We get one or more grilled steaks a reward:
+		// You see a fresh grilled steak. It smells awesome and is really juicy. It is a special quest reward for player, and cannot be used by others. Stats are (HP: 200).
+		assertTrue(getReply(haunchy).matches("Thank you!! Take .* grilled steaks? from my grill!"));
+		assertTrue(player.isEquipped("grilled steak"));
+		assertEquals("waiting", player.getQuest(questSlot, 0));
+		haunchyEng.step(player, "bye");
+		assertEquals("A nice day to you! Always keep your fire burning!", getReply(haunchy));
+
+		// -----------------------------------------------
+
+		haunchyEng.step(player, "hi");
+		assertEquals("Hey! Nice day for a BBQ!", getReply(haunchy));
+		haunchyEng.step(player, "task");
+		assertEquals("The coal amount behind my counter is still high enough. I will not need more for 2 days.", getReply(haunchy));
+		haunchyEng.step(player, "bye");
+		assertEquals("A nice day to you! Always keep your fire burning!", getReply(haunchy));
+
+		// -----------------------------------------------
+
+		haunchyEng.step(player, "hi");
+		assertEquals("Hey! Nice day for a BBQ!", getReply(haunchy));
+		haunchyEng.step(player, "coal");
+		assertEquals("Sometime you could do me a #favour ...", getReply(haunchy));
+		haunchyEng.step(player, "favour");
+		assertEquals("The coal amount behind my counter is still high enough. I will not need more for 2 days.", getReply(haunchy));
+		haunchyEng.step(player, "offer");
+		assertEquals("I hope that my steaks will be ready soon. Please be a bit patient or have some other snacks first.", getReply(haunchy));
+		haunchyEng.step(player, "help");
+		assertEquals("Unfortunately the steaks aren't ready yet... If you are hungry and can't wait, you could check some offers in the near out like the Blacksheep offers near the fisherhuts in Ados or you can take a ferry to Athor for getting some nice snacks...", getReply(haunchy));
+		haunchyEng.step(player, "task");
+		assertEquals("The coal amount behind my counter is still high enough. I will not need more for 2 days.", getReply(haunchy));
+		haunchyEng.step(player, "bye");
+		assertEquals("A nice day to you! Always keep your fire burning!", getReply(haunchy));
+	}
 }
