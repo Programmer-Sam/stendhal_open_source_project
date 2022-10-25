@@ -17,8 +17,13 @@ import java.util.LinkedList;
 import java.util.List;
 
 import games.stendhal.common.Direction;
+import games.stendhal.common.parser.Sentence;
+import games.stendhal.server.core.engine.SingletonRepository;
+import games.stendhal.server.entity.item.Item;
+import games.stendhal.server.entity.npc.ChatAction;
 import games.stendhal.server.entity.npc.ConversationPhrases;
 import games.stendhal.server.entity.npc.ConversationStates;
+import games.stendhal.server.entity.npc.EventRaiser;
 import games.stendhal.server.entity.npc.SpeakerNPC;
 import games.stendhal.server.entity.npc.action.DropItemAction;
 import games.stendhal.server.entity.npc.action.ExamineChatAction;
@@ -37,6 +42,8 @@ import games.stendhal.server.entity.npc.condition.QuestInStateCondition;
 import games.stendhal.server.entity.npc.condition.QuestNotStartedCondition;
 import games.stendhal.server.entity.player.Player;
 import games.stendhal.server.maps.Region;
+import marauroa.common.game.IRPZone;
+import marauroa.common.game.RPObject;
 
 /**
  * QUEST: Zekiels practical test
@@ -259,6 +266,26 @@ public class ZekielsPracticalTestQuest extends AbstractQuest {
 			"Before I can send you on the first step, you have to drop any candles you are carrying.",
 			null);
 
+		
+		final List<ChatAction> actions = new LinkedList<ChatAction>();
+		actions.add(new SetQuestAction(QUEST_SLOT, "first_step"));
+		actions.add(new TeleportAction("int_semos_wizards_tower_1", 15, 16, Direction.DOWN));
+		actions.add(new ChatAction() {
+			@Override
+			public void fire(final Player player, final Sentence sentence, final EventRaiser npc) {
+				
+				final IRPZone zone = SingletonRepository.getRPWorld().getZone("int_semos_wizards_tower_1");
+				final Item candle = SingletonRepository.getEntityManager().getItem("candle");
+
+				// remove all instances of candle from level 1 before restarting the test
+				for (RPObject rp : zone) {
+					if (rp.getRPClass() == candle.getRPClass()) {
+						zone.remove(rp.getID());
+					}
+				}
+			}
+		});
+		
 		// send the player, so long as he doesn't not have candles, and record which step he is on
 		npc.add(ConversationStates.ATTENDING,
 			"send",
@@ -267,9 +294,7 @@ public class ZekielsPracticalTestQuest extends AbstractQuest {
 					new NotCondition(new PlayerHasItemWithHimCondition("candle"))),
 			ConversationStates.IDLE,
 			null,
-			new MultipleActions(
-					new SetQuestAction(QUEST_SLOT, "first_step"),
-					new TeleportAction("int_semos_wizards_tower_1", 15, 16, Direction.DOWN)));
+			new MultipleActions(actions));
 	}
 
 	private void finishQuestStep() {
