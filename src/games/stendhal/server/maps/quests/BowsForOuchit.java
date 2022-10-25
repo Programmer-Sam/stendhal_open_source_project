@@ -195,9 +195,18 @@ ask for horse hair.
 		 * get a reference to the Karl NPC
 		 */
 		SpeakerNPC npc = npcs.get("Karl");
-
+;
 		npc.add(ConversationStates.ATTENDING,
-				"Ouchit",
+				"horse hairs",
+				new AndCondition(new QuestInStateCondition(QUEST_SLOT,"hair"),
+								new NotCondition (new PlayerHasItemWithHimCondition("horse hair",1))),
+				ConversationStates.ATTENDING,
+				"Hello, hello! Ouchit needs more horse hairs from my horses? " +
+				"No problem, here you are. Send Ouchit greetings from me.",
+				new EquipItemAction("horse hair"));
+		
+		npc.add(ConversationStates.ATTENDING,
+				"ouchit",
 				new AndCondition(new QuestInStateCondition(QUEST_SLOT,"hair"),
 								new NotCondition (new PlayerHasItemWithHimCondition("horse hair",1))),
 				ConversationStates.ATTENDING,

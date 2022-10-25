@@ -1,13 +1,17 @@
 package games.stendhal.server.maps.quests;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
 import games.stendhal.common.grammar.Grammar;
+import games.stendhal.common.parser.Sentence;
 import games.stendhal.server.entity.npc.ChatAction;
 import games.stendhal.server.entity.npc.ConversationPhrases;
 import games.stendhal.server.entity.npc.ConversationStates;
+import games.stendhal.server.entity.npc.EventRaiser;
 import games.stendhal.server.entity.npc.SpeakerNPC;
 import games.stendhal.server.entity.npc.action.CollectRequestedItemsAction;
 import games.stendhal.server.entity.npc.action.EquipRandomAmountOfItemAction;
@@ -286,8 +290,7 @@ public class FruitsForCoralia extends AbstractQuest {
             "I've never seen pomegranate trees growing wild, but I heard of a man living south of the great river cultivating them in his garden.",
             null);
     }
-
-
+    
     private void prepareBringingStep() {
 		final SpeakerNPC npc = npcs.get("Coralia");
 
@@ -325,10 +328,26 @@ public class FruitsForCoralia extends AbstractQuest {
 			new EquipRandomAmountOfItemAction("minor potion", 2, 8),
 			new SetQuestToTimeStampAction(QUEST_SLOT, 1)
 		);
+    	
 
     	// add triggers for the item names
     	final ItemCollection items = new ItemCollection();
     	items.addFromQuestStateString(NEEDED_ITEMS);
+    	
+    	npc.add(ConversationStates.QUESTION_2, 
+    			"everything",
+				null,
+				ConversationStates.QUESTION_2,
+				null,
+				new ChatAction() {
+			    @Override
+				public void fire(final Player player, final Sentence sentence,
+					   final EventRaiser npc) {
+			    	everythingForCoralia(player, sentence, npc);
+			}
+		});
+    	
+    	
     	for (final Map.Entry<String, Integer> item : items.entrySet()) {
     		npc.add(ConversationStates.QUESTION_2,
     			item.getKey(),
@@ -341,6 +360,68 @@ public class FruitsForCoralia extends AbstractQuest {
     				completeAction,
     				ConversationStates.ATTENDING));
     	}
+    	
+    }
+    
+    private static final List<String> NEEDED_FRUIT = Arrays.asList(
+    		"apple", "cherry", "banana", "grapes", "pear", "pomegranate", "watermelon");
+    
+    private List<String> missingFruit(final Player player, final boolean hash) {
+		final List<String> result = new LinkedList<String>();
+
+		String doneText = player.getQuest(QUEST_SLOT);
+		if (doneText == null) {
+			doneText = "";
+		}
+		final List<String> done = Arrays.asList(doneText.split(";"));
+		for (String ingredient : NEEDED_FRUIT) {
+			if (!done.contains(ingredient)) {
+				if (hash) {
+					ingredient = "#" + ingredient;
+				}
+				result.add(ingredient);
+			}
+		}
+		return result;
+	}
+    
+    public void everythingForCoralia(final Player player, final Sentence sentence, final EventRaiser npc) {
+    	List<String> missing = missingFruit(player, false);
+		for (final String fruit : missing) {
+			int amount = 0;
+			switch(fruit) {
+				case("#apple"): amount = 4; break;
+				case("#cherry"): amount = 9; break;
+				case("#banana"): amount = 5; break;
+				case("#grapes"): amount = 2; break;
+				case("#pear"): amount = 4; break;
+				case("#pomegranate"): amount = 2; break;
+				case("#watermelon"): amount = 1; break;
+			}
+		if (player.drop(fruit, amount)) {
+			final String doneText = player.getQuest(QUEST_SLOT);
+			player.setQuest(QUEST_SLOT, doneText + ";"
+			+ fruit);
+			}
+		}
+		missing = missingFruit(player, true);
+		if (missing.size() > 0) {
+			npc.say("I still need more fruit.");
+			npc.setCurrentState(ConversationStates.ATTENDING);
+			return;
+		} else {
+			ChatAction completeAction = new  MultipleActions(
+					new SetQuestAction(QUEST_SLOT, "done"),
+					new SayTextAction("My hat has never looked so delightful! Thank you ever so much! Here, take this as a reward."),
+					new IncreaseXPAction(300),
+					new IncreaseKarmaAction(5),
+					new EquipRandomAmountOfItemAction("crepes suzette", 1, 5),
+					new EquipRandomAmountOfItemAction("minor potion", 2, 8),
+					new SetQuestToTimeStampAction(QUEST_SLOT, 1)
+				);
+			completeAction.fire(player, sentence, npc);
+			npc.setCurrentState(ConversationStates.ATTENDING);
+		}
     }
 
 	@Override
