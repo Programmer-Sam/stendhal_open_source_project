@@ -2,6 +2,18 @@ Changelog
 ---------
 ---------
 
+1.40uom
+
+*quests*
+- fix cheating on Zekiel's Practical Test
+- allow players to choose what masks they get from Fidorea
+- give Coralia option to accept everything
+- inform the player that pet is preventing player from travelling zones when it's too far away
+- fix Haunchy doesn't accept charcoal
+- fix Lieutenant Drilenun's suggestion on 'rod of the GM'
+- make Karl accept 'horse hairs' input
+- fix the name of NPC Florence Bouillabaisse
+
 
 1.40
 

@@ -167,6 +167,8 @@ Authors of Stendhal are:
   · Bugs fixer
   - Diligent Dodo (aka Soniccuz)
   · Artist (mimic, dodo, suba diving concepts)
+- UoM Team 24 (Jiaming Sun, Ka Lok Chau, Alp Yazici, Yuyao Chen, Hisam Iftikhar, Samuel Belkadi, Kaixuan Wang, Masroor Ahmad)
+  · Bugs fixer
 
 We also thank many who have contributed to Stendhal by providing patches,
 which the rest of the team commited on their behalf.
